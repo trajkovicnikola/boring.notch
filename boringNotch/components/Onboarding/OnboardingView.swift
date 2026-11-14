@@ -155,9 +155,12 @@ struct OnboardingView: View {
                 MusicControllerSelectionView(
                     onContinue: {
                         withAnimation(.easeInOut(duration: 0.6)) {
-                            if BoringViewCoordinator.shared.firstLaunch {
+                            if BoringViewCoordinator.shared.firstLaunch && SoftwareUpdateStore.isEnabled {
                                 step = .softwareUpdatePermission
                             } else {
+                                // The update step is what normally ends the
+                                // first launch; with updates off, end it here.
+                                BoringViewCoordinator.shared.firstLaunch = false
                                 step = .finished
                             }
                         }

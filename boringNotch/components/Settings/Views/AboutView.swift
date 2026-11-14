@@ -69,7 +69,9 @@ struct AboutView: View {
                     Text("Version info")
                 }
 
-                UpdaterSettingsView(updater: updaterController.updater)
+                if SoftwareUpdateStore.isEnabled {
+                    UpdaterSettingsView(updater: updaterController.updater)
+                }
 
                 HStack(spacing: 30) {
                     Spacer(minLength: 0)
@@ -117,7 +119,9 @@ struct AboutView: View {
             .frame(maxWidth: .infinity, alignment: .center)
         }
         .toolbar {
-            CheckForUpdatesView(updater: updaterController.updater)
+            if SoftwareUpdateStore.isEnabled {
+                CheckForUpdatesView(updater: updaterController.updater)
+            }
         }
         .navigationTitle("About")
     }

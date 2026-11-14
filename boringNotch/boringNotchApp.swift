@@ -80,7 +80,11 @@ struct DynamicNotchApp: App {
                 }
                 NSLog("Failed to migrate legacy Boring Notch app bundle at %@", sourceURL.path)
             }
-            updaterController.startUpdater()
+            // The feed belongs to the upstream project; updating from it
+            // would replace this build with one that lacks its changes.
+            if SoftwareUpdateStore.isEnabled {
+                updaterController.startUpdater()
+            }
         }
     }
 
@@ -92,7 +96,9 @@ struct DynamicNotchApp: App {
                 }
             }
             .keyboardShortcut(KeyEquivalent(","), modifiers: .command)
-            CheckForUpdatesView(updater: updaterController.updater)
+            if SoftwareUpdateStore.isEnabled {
+                CheckForUpdatesView(updater: updaterController.updater)
+            }
             Button("Restart Boring Notch") {
                 ApplicationRelauncher.restart()
             }
@@ -107,6 +113,10 @@ struct DynamicNotchApp: App {
 @MainActor
 enum SoftwareUpdateStore {
     static var updater: SPUUpdater?
+    /// Off in this fork: the Sparkle feed is upstream's, so checking would
+    /// offer builds without this fork's changes. Flip on once the fork
+    /// publishes its own signed appcast.
+    static let isEnabled = false
 }
 
 @MainActor
