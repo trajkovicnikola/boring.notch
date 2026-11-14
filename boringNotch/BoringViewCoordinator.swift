@@ -91,6 +91,7 @@ final class BoringViewCoordinator: ObservableObject {
     private var accessibilityObserver: Any?
     private var osdReplacementCancellable: AnyCancellable?
     private var boringShelfCancellable: AnyCancellable?
+    private var showPomodoroTabCancellable: AnyCancellable?
     private var osdSourceCancellables: [AnyCancellable] = []
     private var notificationLiveActivityCancellable: AnyCancellable?
     private var uiEventCancellable: AnyCancellable?
@@ -154,6 +155,10 @@ final class BoringViewCoordinator: ObservableObject {
                             icon: icon, accent: accent, targetScreenUUID: uuid)
                     case .expandingView(let type):
                         self.toggleExpandingView(status: true, type: type)
+                    case .openNotch:
+                        // Handled by NotchWindowManager, which knows whether
+                        // the notch actually opened (and so may switch tabs).
+                        break
                     }
                 }
             }
@@ -188,6 +193,16 @@ final class BoringViewCoordinator: ObservableObject {
                 Task { @MainActor in
                     guard let self = self else { return }
                     if !change.newValue && self.currentView == .shelf {
+                        self.currentView = .home
+                    }
+                }
+            }
+
+        showPomodoroTabCancellable = Defaults.publisher(.showPomodoroTab)
+            .sink { [weak self] change in
+                Task { @MainActor in
+                    guard let self = self else { return }
+                    if !change.newValue && self.currentView == .pomodoro {
                         self.currentView = .home
                     }
                 }

@@ -22,6 +22,8 @@ struct ContentView: View {
     @ObservedObject var brightnessManager = BrightnessManager.shared
     @ObservedObject var volumeManager = VolumeManager.shared
     @ObservedObject var notificationManager = SystemNotificationManager.shared
+    @ObservedObject var pomodoro = PomodoroManager.shared
+    @Default(.showPomodoroInClosedNotch) private var showPomodoroInClosedNotch
     /// Which entry of the closed-notch activity stack is on top.
     @State private var activityIndex: Int = 0
     @State private var hoverTask: Task<Void, Never>?
@@ -105,6 +107,12 @@ struct ContentView: View {
 
         if let notification = notificationManager.activeNotification {
             items.append(.notification(notification))
+        }
+
+        // A running timer sits in front of music; swipe to reach the player
+        // behind it. Once paused it lingers like paused music, then hides.
+        if showPomodoroInClosedNotch && !pomodoro.isTimerIdle {
+            items.append(.pomodoro)
         }
 
         let musicIsShowing = (!coordinator.expandingView.show || coordinator.expandingView.type == .music)
@@ -204,6 +212,8 @@ struct ContentView: View {
             switch activity {
             case .notification:
                 chinWidth += (2 * max(0, vm.effectiveClosedNotchHeight - 12) + 20)
+            case .pomodoro:
+                chinWidth += 2 * PomodoroLiveActivity.wingWidth + 2 * liveActivityEdgeMargin + 2
             case .music:
                 chinWidth += (2 * max(0, displayClosedNotchHeight - 12) + 20 + 2 * liveActivityEdgeMargin + 2)
                 // The inline song-change peek widens the pill itself, so the
@@ -451,6 +461,11 @@ struct ContentView: View {
                               switch item {
                               case .notification(let notification):
                                   NotificationLiveActivity(notification: notification)
+                              case .pomodoro:
+                                  PomodoroLiveActivity(
+                                      height: displayClosedNotchHeight,
+                                      centerWidth: vm.closedNotchSize.width - 4 + (2 * liveActivityEdgeMargin)
+                                  )
                               case .music:
                                   MusicLiveActivity()
                                       .frame(alignment: .center)
@@ -556,6 +571,8 @@ struct ContentView: View {
                                 dropInteraction: vm.dropInteraction,
                                 animation: vm.animation
                             )
+                        case .pomodoro:
+                            PomodoroView()
                         }
                     }
                 }

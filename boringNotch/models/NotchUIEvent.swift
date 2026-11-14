@@ -28,6 +28,10 @@ enum NotchUIEvent {
         duration: TimeInterval = 1.5
     )
     case expandingView(type: SneakContentType)
+    /// Opens a closed notch on the given tab. Handled by `NotchWindowManager`,
+    /// which owns the per-screen view models; an already open notch is left
+    /// on whatever tab the user is on.
+    case openNotch(view: NotchViews)
 }
 
 /// The event pipe. `BoringViewCoordinator` is the intended subscriber.

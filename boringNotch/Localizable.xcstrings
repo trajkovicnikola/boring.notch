@@ -346,6 +346,16 @@
         }
       }
     },
+    "%@ remaining, %lld of %lld work periods completed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ remaining, %2$lld of %3$lld work periods completed"
+          }
+        }
+      }
+    },
     "%@ Required" : {
       "localizations" : {
         "en" : {
@@ -1375,6 +1385,9 @@
           }
         }
       }
+    },
+    "Alarm" : {
+
     },
     "All Applications" : {
       "localizations" : {
@@ -2765,6 +2778,9 @@
           }
         }
       }
+    },
+    "Automatically start next phase" : {
+
     },
     "Automatically switch display if preferred is unavailable" : {
       "comment" : "Display behavior option: switch to the active display when the preferred display is unavailable.",
@@ -4257,6 +4273,9 @@
           }
         }
       }
+    },
+    "BREAK" : {
+
     },
     "Brightness" : {
       "localizations" : {
@@ -10423,6 +10442,9 @@
         }
       }
     },
+    "Duration changes apply from the next phase that starts." : {
+
+    },
     "e.g., 1920" : {
       "localizations" : {
         "es" : {
@@ -16254,6 +16276,12 @@
         }
       }
     },
+    "Long break" : {
+
+    },
+    "LONG BREAK" : {
+
+    },
     "Looking for devices…" : {
       "localizations" : {
         "fr" : {
@@ -18362,6 +18390,9 @@
         }
       }
     },
+    "min" : {
+
+    },
     "Mirror" : {
       "comment" : "Camera mirror placeholder title",
       "localizations" : {
@@ -20381,6 +20412,9 @@
         }
       }
     },
+    "Notifications are turned off for boring.notch in System Settings." : {
+
+    },
     "Now Playing" : {
       "localizations" : {
         "cs" : {
@@ -21256,6 +21290,9 @@
         }
       }
     },
+    "Open notch on Pomodoro tab" : {
+
+    },
     "Open Reminder Settings" : {
       "localizations" : {
         "cs" : {
@@ -21741,6 +21778,9 @@
         }
       }
     },
+    "Opening the notch needs the Pomodoro tab, which is hidden or unavailable in compact mode. Any timer control silences the sound." : {
+
+    },
     "Opens %@" : {
       "comment" : "A hint that appears when tapping the notification. The argument is the name of the app.",
       "localizations" : {
@@ -22174,6 +22214,16 @@
         }
       }
     },
+    "Paused, %@ remaining, %lld of %lld work periods completed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Paused, %1$@ remaining, %2$lld of %3$lld work periods completed"
+          }
+        }
+      }
+    },
     "PDF Creation Failed" : {
       "localizations" : {
         "fr" : {
@@ -22365,6 +22415,9 @@
           }
         }
       }
+    },
+    "Play sound" : {
+
     },
     "Play/Pause" : {
       "localizations" : {
@@ -22734,6 +22787,12 @@
         }
       }
     },
+    "Pomodoro" : {
+
+    },
+    "Pomodoro, %@" : {
+
+    },
     "Preferred display" : {
       "localizations" : {
         "de" : {
@@ -22879,6 +22938,12 @@
           }
         }
       }
+    },
+    "Preview" : {
+
+    },
+    "Preview Sound" : {
+
     },
     "Previous" : {
       "localizations" : {
@@ -25034,6 +25099,12 @@
         }
       }
     },
+    "Reset" : {
+
+    },
+    "Reset Cycle" : {
+
+    },
     "Reset to Defaults" : {
       "localizations" : {
         "de" : {
@@ -26080,6 +26151,9 @@
           }
         }
       }
+    },
+    "Short break" : {
+
     },
     "Shortcuts" : {
       "localizations" : {
@@ -27320,6 +27394,9 @@
         }
       }
     },
+    "Show notification" : {
+
+    },
     "Show notifications in the notch" : {
       "localizations" : {
         "de" : {
@@ -27907,6 +27984,9 @@
           }
         }
       }
+    },
+    "Show Pomodoro tab in notch" : {
+
     },
     "Show power status icons" : {
       "localizations" : {
@@ -28502,6 +28582,9 @@
         }
       }
     },
+    "Show timer next to closed notch" : {
+
+    },
     "Shows a smaller opened notch with just the music player — no tabs, calendar or mirror." : {
       "localizations" : {
         "de" : {
@@ -28627,6 +28710,12 @@
           }
         }
       }
+    },
+    "Skip" : {
+
+    },
+    "Skip to Next Phase" : {
+
     },
     "Slider color" : {
       "localizations" : {
@@ -29140,6 +29229,9 @@
         }
       }
     },
+    "Sound" : {
+
+    },
     "Speed" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -29459,6 +29551,15 @@
         }
       }
     },
+    "Start" : {
+
+    },
+    "Start Break" : {
+
+    },
+    "Start Work" : {
+
+    },
     "System" : {
       "localizations" : {
         "de" : {
@@ -29765,6 +29866,9 @@
         }
       }
     },
+    "The notch doesn't open over fullscreen video or presentations. Any timer control silences the sound." : {
+
+    },
     "Time to Full Charge: %@" : {
       "localizations" : {
         "de" : {
@@ -29912,6 +30016,9 @@
         }
       }
     },
+    "Time to head back to work — let's go!" : {
+
+    },
     "Time Until Empty: %@" : {
       "comment" : "A label that shows the time remaining until the battery is empty.",
       "localizations" : {
@@ -30041,6 +30148,9 @@
           }
         }
       }
+    },
+    "Timer" : {
+
     },
     "Tint progress bar with accent color" : {
       "extractionState" : "stale",
@@ -32669,6 +32779,9 @@
         }
       }
     },
+    "When a phase ends" : {
+
+    },
     "White" : {
       "comment" : "Slider color option: white",
       "localizations" : {
@@ -32791,6 +32904,15 @@
           }
         }
       }
+    },
+    "Work" : {
+
+    },
+    "WORK" : {
+
+    },
+    "Work periods before long break" : {
+
     },
     "Works with most media apps, including browsers, to detect what's playing. Note: This may be removed in a future macOS version." : {
       "comment" : "Onboarding description of the universal macOS Now Playing music source.",
@@ -32956,6 +33078,12 @@
           }
         }
       }
+    },
+    "You completed a full cycle — time for a well-deserved long break." : {
+
+    },
+    "You crushed this work period — time for a well-deserved rest." : {
+
     },
     "You're All Set!" : {
       "localizations" : {

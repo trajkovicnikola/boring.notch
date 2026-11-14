@@ -9,6 +9,7 @@
 //  glue (shortcuts, onboarding, termination) and forwards to this manager.
 //
 
+import Combine
 import Defaults
 import SwiftUI
 
@@ -31,11 +32,74 @@ final class NotchWindowManager {
     private(set) var isScreenLocked: Bool = false
     private var windowScreenDidChangeObserver: Any?
     private var previousScreens: [NSScreen]?
+    private var uiEventCancellable: AnyCancellable?
+    private var eventAutoCloseTask: Task<Void, Never>?
+    private var eventOpenStateCancellable: AnyCancellable?
 
     init(camera: CameraModel) {
         // Migrate saved heights before the initial view model reads notch sizing.
         LegacyNonNotchHeightMigration.applyIfNeeded()
         primaryViewModel = BoringViewModel(camera: camera)
+
+        // The coordinator switches the tab for this event; opening needs the
+        // per-screen view models, which live here.
+        uiEventCancellable = NotchUIEventBus.events
+            .sink { [weak self] event in
+                guard case .openNotch(let view) = event else { return }
+                Task { @MainActor in
+                    self?.openNotch(showing: view)
+                }
+            }
+    }
+
+    /// The notch for the screen under the pointer. With a single notch window
+    /// that's always the primary one; with one per display it falls back to
+    /// the preferred screen, then the main screen, when the pointer's screen
+    /// has no notch (e.g. mid-reconfiguration).
+    func screenContextUnderPointer() -> (viewModel: BoringViewModel, window: NSWindow?)? {
+        guard Defaults[.displayMode] == .allDisplays else {
+            return (primaryViewModel, primaryWindow)
+        }
+
+        let mouseLocation = NSEvent.mouseLocation
+        let candidateUUIDs = [
+            NSScreen.screens.first { $0.frame.contains(mouseLocation) }?.displayUUID,
+            BoringViewCoordinator.shared.selectedScreenUUID,
+            NSScreen.main?.displayUUID
+        ]
+        for uuid in candidateUUIDs.compactMap({ $0 }) {
+            if let context = contexts[uuid] {
+                return (context.viewModel, context.window)
+            }
+        }
+        return nil
+    }
+
+    /// Opens the notch on the screen under the pointer (like the Toggle Notch
+    /// Open shortcut) and closes it again after a few seconds, unless the
+    /// pointer has moved over it by then. An already open notch keeps its
+    /// tab, so this never yanks the user away from what they're doing.
+    private func openNotch(showing view: NotchViews) {
+        guard let (viewModel, window) = screenContextUnderPointer(), viewModel.open() else { return }
+        BoringViewCoordinator.shared.currentView = view
+
+        eventAutoCloseTask?.cancel()
+        eventAutoCloseTask = Task { [weak viewModel, weak window] in
+            try? await Task.sleep(for: .seconds(4))
+            guard !Task.isCancelled, let viewModel, viewModel.notchState == .open else { return }
+            if let window, window.frame.contains(NSEvent.mouseLocation) { return }
+            viewModel.close()
+        }
+
+        // The auto-close belongs to this open only: once this notch closes,
+        // a later open (hover, shortcut) must not be cut short by it.
+        eventOpenStateCancellable = viewModel.$notchState
+            .dropFirst()
+            .first { $0 == .closed }
+            .sink { [weak self] _ in
+                self?.eventAutoCloseTask?.cancel()
+                self?.eventAutoCloseTask = nil
+            }
     }
 
     // MARK: - Public lookups (preserve AppDelegate's old API shape)

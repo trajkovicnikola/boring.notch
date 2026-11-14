@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		07FE456E7AEA085D9FCA6D97 /* MeetingLinkDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B2A5E5F4D28F1DD9CD0B09 /* MeetingLinkDetector.swift */; };
+		0920CFD930A898F7000BAFD9 /* PomodoroManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920CFD830A898F7000BAFD9 /* PomodoroManager.swift */; };
 		110029272E84FD4C00035A57 /* TemporaryFileStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110029262E84FD4C00035A57 /* TemporaryFileStorageService.swift */; };
 		1100292A2E8691B400035A57 /* FileShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110029292E8691B400035A57 /* FileShareView.swift */; };
 		1100292E2E86940F00035A57 /* QuickShareService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100292D2E86940F00035A57 /* QuickShareService.swift */; };
@@ -111,8 +112,10 @@
 		9A987A0D2C73CA66005CA465 /* ShelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A987A032C73CA66005CA465 /* ShelfView.swift */; };
 		9A987A102C73CA8D005CA465 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = 9A987A0F2C73CA8D005CA465 /* Collections */; };
 		9AB0C6BD2C73C9CB00F7CD30 /* NotchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB0C6BB2C73C9CB00F7CD30 /* NotchHomeView.swift */; };
+		A1B2C3D42F00000000000002 /* pomodoro_alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42F00000000000001 /* pomodoro_alarm.mp3 */; };
 		A1B2C3D4E5F60718293A4B5D /* NowPlayingStreamSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* NowPlayingStreamSupport.swift */; };
 		A1F000012F00000100000001 /* ShelfItemInteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F000022F00000100000001 /* ShelfItemInteractionView.swift */; };
+		A330CD0EA12B4CD187E237FA /* PowerStatusNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B78717F39D486190A1E34C /* PowerStatusNotice.swift */; };
 		A7F4A06476BC4B029B6BECEA /* NotchUIEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E354C7D712441284085CEA /* NotchUIEvent.swift */; };
 		AA01NLA12E7A0001 /* NotificationLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01NLA22E7A0001 /* NotificationLiveActivity.swift */; };
 		AA01SNM12E7A0001 /* SystemNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01SNM22E7A0001 /* SystemNotificationManager.swift */; };
@@ -138,7 +141,6 @@
 		C1A6A2B12D00000100000001 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A6A2AE2D00000100000001 /* CameraModel.swift */; };
 		F1F2A0A100000000000000F1 /* AudioCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F2A0A200000000000000F2 /* AudioCaptureManager.swift */; };
 		F38DE6482D8243E7008B5C6D /* BatteryActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */; };
-		A330CD0EA12B4CD187E237FA /* PowerStatusNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B78717F39D486190A1E34C /* PowerStatusNotice.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -186,6 +188,7 @@
 /* Begin PBXFileReference section */
 		0268933F488E47DFB58E48CF /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
 		033B8885979E4EA1A78E8ADC /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		0920CFD830A898F7000BAFD9 /* PomodoroManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroManager.swift; sourceTree = "<group>"; };
 		110029262E84FD4C00035A57 /* TemporaryFileStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryFileStorageService.swift; sourceTree = "<group>"; };
 		110029292E8691B400035A57 /* FileShareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileShareView.swift; sourceTree = "<group>"; };
 		1100292D2E86940F00035A57 /* QuickShareService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickShareService.swift; sourceTree = "<group>"; };
@@ -280,6 +283,7 @@
 		9A0887342C7AFF8E00C160EA /* TabSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSelectionView.swift; sourceTree = "<group>"; };
 		9A987A032C73CA66005CA465 /* ShelfView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShelfView.swift; sourceTree = "<group>"; };
 		9AB0C6BB2C73C9CB00F7CD30 /* NotchHomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotchHomeView.swift; sourceTree = "<group>"; };
+		A1B2C3D42F00000000000001 /* pomodoro_alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pomodoro_alarm.mp3; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B5C /* NowPlayingStreamSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingStreamSupport.swift; sourceTree = "<group>"; };
 		A1F000022F00000100000001 /* ShelfItemInteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfItemInteractionView.swift; sourceTree = "<group>"; };
 		A5167212301F85B40018095A /* boringNotchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = boringNotchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -304,11 +308,11 @@
 		C0D300022F60000100000001 /* DropInteractionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropInteractionState.swift; sourceTree = "<group>"; };
 		C1A6A2AE2D00000100000001 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		C1A6A2AF2D00000100000001 /* CameraSessionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSessionEngine.swift; sourceTree = "<group>"; };
+		D8B78717F39D486190A1E34C /* PowerStatusNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerStatusNotice.swift; sourceTree = "<group>"; };
 		E49B58CAC648403F864E6D78 /* ShelfContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfContextMenu.swift; sourceTree = "<group>"; };
 		EAB1C3E8B149445A9E57C6AF /* NotchWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchWindowManager.swift; sourceTree = "<group>"; };
 		F1F2A0A200000000000000F2 /* AudioCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCaptureManager.swift; sourceTree = "<group>"; };
 		F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryActivityManager.swift; sourceTree = "<group>"; };
-		D8B78717F39D486190A1E34C /* PowerStatusNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerStatusNotice.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -322,6 +326,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		0920CFDA30A89905000BAFD9 /* Pomodoro */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Pomodoro; sourceTree = "<group>"; };
 		112FB72F2CCF12CC0015238C /* private */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = private; sourceTree = "<group>"; };
 		11DAAB303061BDED00E15887 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		11DAAB463061BE1600E15887 /* LiveActivities */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LiveActivities; sourceTree = "<group>"; };
@@ -568,6 +573,7 @@
 				14D570BF2C5EA5870011E668 /* AnimatedFace.swift */,
 				507266DA2C908E2E00A2D00D /* HoverButton.swift */,
 				0268933F488E47DFB58E48CF /* VisualEffectView.swift */,
+				0920CFDA30A89905000BAFD9 /* Pomodoro */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -587,6 +593,7 @@
 				F1F2A0A200000000000000F2 /* AudioCaptureManager.swift */,
 				C1A6A2AF2D00000100000001 /* CameraSessionEngine.swift */,
 				14C08BB52C8DE42D000F8AA0 /* CalendarManager.swift */,
+				0920CFD830A898F7000BAFD9 /* PomodoroManager.swift */,
 			);
 			path = managers;
 			sourceTree = "<group>";
@@ -651,6 +658,7 @@
 				B17266E02C6532560031BA0D /* Localizable.xcstrings */,
 				14CEF4192C5CAED400855D72 /* Assets.xcassets */,
 				14A7E5962C65FD31008C1BE9 /* boring.m4a */,
+				A1B2C3D42F00000000000001 /* pomodoro_alarm.mp3 */,
 				1443E7F42C609E650027C1FC /* Info.plist */,
 				14CEF41E2C5CAED400855D72 /* boringNotch.entitlements */,
 				14CEF41B2C5CAED400855D72 /* Preview Content */,
@@ -827,6 +835,7 @@
 				11F7485A2EC9AABA00F841DB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				0920CFDA30A89905000BAFD9 /* Pomodoro */,
 				112FB72F2CCF12CC0015238C /* private */,
 				11DAAB303061BDED00E15887 /* Settings */,
 				11DAAB463061BE1600E15887 /* LiveActivities */,
@@ -949,6 +958,7 @@
 				112B0EB92E30DD0F00562D6C /* mediaremote-adapter.pl in Resources */,
 				B17266E12C6532560031BA0D /* Localizable.xcstrings in Resources */,
 				14A7E5972C65FD31008C1BE9 /* boring.m4a in Resources */,
+				A1B2C3D42F00000000000002 /* pomodoro_alarm.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1007,6 +1017,7 @@
 				118EBE292E946B3F00D54B5A /* ShareServiceFinder.swift in Sources */,
 				1113ABC52E80E27000EC13B2 /* ShelfItemView.swift in Sources */,
 				A1F000012F00000100000001 /* ShelfItemInteractionView.swift in Sources */,
+				0920CFD930A898F7000BAFD9 /* PomodoroManager.swift in Sources */,
 				AFA82F21304B406590337862 /* ShelfContextMenu.swift in Sources */,
 				1113ABC62E80E27000EC13B2 /* ShelfPersistenceService.swift in Sources */,
 				11DB26662EDD0BE1001EA0CF /* LyricsService.swift in Sources */,

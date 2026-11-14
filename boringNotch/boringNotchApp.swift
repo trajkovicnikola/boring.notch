@@ -203,6 +203,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Creates the Pomodoro manager now, so it is the notification delegate
+        // before launch finishes and clicks on earlier notifications land.
+        _ = PomodoroManager.shared
         SettingsWindowController.shared.setCamera(camera)
         migrateDisplayModeIfNeeded()
 
@@ -280,20 +283,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             Task { [weak self] in
                 guard let self = self else { return }
 
-                let mouseLocation = NSEvent.mouseLocation
-
-                var viewModel = self.vm
-
-                if Defaults[.displayMode] == .allDisplays {
-                    for screen in NSScreen.screens {
-                        if screen.frame.contains(mouseLocation) {
-                            if let uuid = screen.displayUUID, let screenViewModel = self.viewModels[uuid] {
-                                viewModel = screenViewModel
-                                break
-                            }
-                        }
-                    }
-                }
+                let viewModel = self.windowManager.screenContextUnderPointer()?.viewModel ?? self.vm
 
                 self.closeNotchTask?.cancel()
                 self.closeNotchTask = nil
