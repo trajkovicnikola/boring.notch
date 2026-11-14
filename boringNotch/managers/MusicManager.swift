@@ -535,6 +535,12 @@ final class MusicManager: ObservableObject {
         }
 
         let timeChanged = state.currentTime != self.elapsedTime
+        // Computed before songTitle/artistName/album/bundleIdentifier are
+        // overwritten below.
+        let trackChanged = state.title != self.songTitle
+            || state.artist != self.artistName
+            || state.album != self.album
+            || state.bundleIdentifier != self.bundleIdentifier
         let durationChanged = state.duration != self.songDuration
         let playbackRateChanged = state.playbackRate != self.playbackRate
         let shuffleChanged = state.isShuffled != self.isShuffled
@@ -595,8 +601,10 @@ final class MusicManager: ObservableObject {
         // republish when an extrapolation input actually changed — otherwise
         // every no-op stream event invalidates the whole view tree. A pause/
         // resume must rebase it too, or the estimate overshoots by the pause
-        // duration.
-        if timeChanged || playbackRateChanged || playingStateChanged {
+        // duration. A track switch must rebase as well: the new track often
+        // reports the same elapsed time as the old one did (e.g. both 0), and
+        // without a rebase the estimate keeps counting from the old start.
+        if timeChanged || playbackRateChanged || playingStateChanged || trackChanged {
             self.timestampDate = state.lastUpdated
         }
     }

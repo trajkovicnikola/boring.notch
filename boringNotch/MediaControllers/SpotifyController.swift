@@ -37,6 +37,14 @@ final class SpotifyController: MediaControllerProtocol {
 
     private var lastArtworkURL: String?
     private var artworkFetchTask: Task<Void, Never>?
+    /// The artwork URL currently being downloaded, if any.
+    private var pendingArtworkURL: String?
+
+    // Spotify can report the previous track's player position right after a
+    // track change and sends no further notification once it settles, so a
+    // single delayed re-read picks up the real position of the new track.
+    private let trackChangeSettleDelay: Duration = .milliseconds(500)
+    private var trackChangeRefreshTask: Task<Void, Never>?
 
     init() {
         setupPlaybackStateChangeObserver()
@@ -58,6 +66,7 @@ final class SpotifyController: MediaControllerProtocol {
     deinit {
         notificationTask?.cancel()
         artworkFetchTask?.cancel()
+        trackChangeRefreshTask?.cancel()
     }
 
     // MARK: - Protocol Implementation
@@ -128,29 +137,49 @@ final class SpotifyController: MediaControllerProtocol {
             state.artwork = existingArtwork
         }
 
+        let trackChanged = !self.playbackState.title.isEmpty
+            && (currentTrack != self.playbackState.title || currentTrackArtist != self.playbackState.artist)
+
     playbackState = state
+
+        if trackChanged {
+            trackChangeRefreshTask?.cancel()
+            trackChangeRefreshTask = Task { [weak self, trackChangeSettleDelay] in
+                try? await Task.sleep(for: trackChangeSettleDelay)
+                guard !Task.isCancelled else { return }
+                await self?.updatePlaybackInfo()
+            }
+        }
 
         if !artworkURL.isEmpty, let url = URL(string: artworkURL) {
             guard artworkURL != lastArtworkURL || state.artwork == nil else { return }
+            // Already downloading this artwork (e.g. the follow-up read after
+            // a track change): let that fetch finish instead of restarting it.
+            guard artworkURL != pendingArtworkURL else { return }
             artworkFetchTask?.cancel()
-
-            let currentState = state
+            pendingArtworkURL = artworkURL
 
             artworkFetchTask = Task {
                 do {
                     let data = try await ImageService.shared.fetchImageData(from: url)
 
                     await MainActor.run { [weak self] in
-                        guard let self = self else { return }
-                        var updatedState = currentState
+                        guard let self, !Task.isCancelled, self.pendingArtworkURL == artworkURL else { return }
+                        // Merge into the latest state rather than the one this
+                        // fetch started from: a newer read may have corrected
+                        // the playback position in the meantime.
+                        var updatedState = self.playbackState
                         updatedState.artwork = data
                         self.playbackState = updatedState
                         self.lastArtworkURL = artworkURL
+                        self.pendingArtworkURL = nil
                         self.artworkFetchTask = nil
                     }
                 } catch {
                     await MainActor.run { [weak self] in
-                        self?.artworkFetchTask = nil
+                        guard let self, self.pendingArtworkURL == artworkURL else { return }
+                        self.pendingArtworkURL = nil
+                        self.artworkFetchTask = nil
                     }
                 }
             }
