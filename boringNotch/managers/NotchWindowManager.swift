@@ -276,7 +276,10 @@ final class NotchWindowManager {
             currentScreens.count != previousScreens?.count
             || Set(currentScreens.compactMap { $0.displayUUID })
                 != Set(previousScreens?.compactMap { $0.displayUUID } ?? [])
-            || Set(currentScreens.map { $0.frame }) != Set(previousScreens?.map { $0.frame } ?? [])
+            // CGRect is only Hashable from macOS 15; compare string keys so
+            // this also works on the macOS 14 deployment target.
+            || Set(currentScreens.map { NSStringFromRect($0.frame) })
+                != Set(previousScreens?.map { NSStringFromRect($0.frame) } ?? [])
 
         previousScreens = currentScreens
 
