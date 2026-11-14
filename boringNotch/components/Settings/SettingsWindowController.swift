@@ -121,8 +121,13 @@ extension SettingsWindowController: NSWindowDelegate {
     }
 
     func windowDidBecomeKey(_ notification: Notification) {
-        // Ensure app is in regular mode when window becomes key
-        NSApp.setActivationPolicy(.regular)
+        // Ensure app is in regular mode when window becomes key. Only switch
+        // when it isn't already: a pop-up menu briefly takes key and hands it
+        // back, and re-applying the policy at that moment dismisses the menu
+        // before it can open.
+        if NSApp.activationPolicy() != .regular {
+            NSApp.setActivationPolicy(.regular)
+        }
     }
 
     func windowDidResignKey(_ notification: Notification) {
