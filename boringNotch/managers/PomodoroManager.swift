@@ -194,13 +194,14 @@ final class PomodoroManager: NSObject, ObservableObject {
         phaseID = UUID()
     }
 
-    /// Moves on to the next phase; a skipped work period doesn't count as
-    /// completed. Keeps going if the timer was running and auto-start is on,
-    /// same as when a phase ends by itself.
+    /// Finishes the current phase early and moves on. A skipped work period
+    /// counts as completed — skipping means "I'm done" — so it fills its dot
+    /// and can earn the long break. Keeps going if the timer was running and
+    /// auto-start is on, same as when a phase ends by itself.
     func skip() {
         stopAlarm()
         let wasRunning = isRunning
-        advance(afterCompleting: false)
+        advance(afterCompleting: true)
         if wasRunning && Defaults[.pomodoroAutoStartNextPhase] {
             start()
         }
