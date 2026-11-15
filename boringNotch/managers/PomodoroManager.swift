@@ -313,11 +313,11 @@ final class PomodoroManager: NSObject, ObservableObject {
 
     private func announceCompletion(of finishedPhase: PomodoroPhase, next nextPhase: PomodoroPhase, isStale: Bool) {
         let message = Self.completionMessage(finished: finishedPhase, next: nextPhase)
-        // Don't pop the notch over a fullscreen video or presentation.
+        // Opens even over fullscreen apps: the user wants the phase change
+        // to be impossible to miss.
         let opensNotch = !isStale
             && Defaults[.pomodoroOpenNotchOnFinish]
             && Self.canShowPomodoroTab
-            && !FullscreenMediaDetector.shared.fullscreenStatus.values.contains(true)
 
         if Defaults[.pomodoroSystemNotification] {
             // When the notch already shows it, the notification only needs

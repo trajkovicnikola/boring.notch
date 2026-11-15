@@ -2058,6 +2058,9 @@
         }
       }
     },
+    "Any timer control silences the sound." : {
+
+    },
     "App" : {
       "localizations" : {
         "en" : {
@@ -29865,9 +29868,6 @@
           }
         }
       }
-    },
-    "The notch doesn't open over fullscreen video or presentations. Any timer control silences the sound." : {
-
     },
     "Time to Full Charge: %@" : {
       "localizations" : {

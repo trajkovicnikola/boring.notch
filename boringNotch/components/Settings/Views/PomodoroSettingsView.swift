@@ -121,7 +121,7 @@ struct PomodoroSettingsView: View {
         if !showPomodoroTab || compactMode {
             return "Opening the notch needs the Pomodoro tab, which is hidden or unavailable in compact mode. Any timer control silences the sound."
         }
-        return "The notch doesn't open over fullscreen video or presentations. Any timer control silences the sound."
+        return "Any timer control silences the sound."
     }
 
     /// A stepper paired with a field, so large changes don't take dozens of
