@@ -44,7 +44,7 @@ struct PomodoroStatisticsSection: View {
 
     private struct Bar: Identifiable {
         let date: Date
-        let minutes: Double
+        let workSeconds: TimeInterval
         let cycles: Int
         var id: Date { date }
     }
@@ -68,7 +68,7 @@ struct PomodoroStatisticsSection: View {
             ? stats.total(in: interval)
             : PomodoroDayRecord(
                 cycles: bars.reduce(0) { $0 + $1.cycles },
-                workSeconds: bars.reduce(0) { $0 + $1.minutes } * 60
+                workSeconds: bars.reduce(0) { $0 + $1.workSeconds }
             )
 
         Section {
@@ -185,15 +185,18 @@ struct PomodoroStatisticsSection: View {
             ? dates.enumerated().filter { $0.offset % 5 == 0 }.map(\.element)
             : dates
 
+        let ticks = Self.minuteTicks(upTo: (bars.map(\.workSeconds).max() ?? 0) / 60)
+
         return Chart(bars) { bar in
             BarMark(
                 x: .value("Date", bar.date, unit: unit),
-                y: .value("Work time", bar.minutes)
+                y: .value("Work time", bar.workSeconds / 60)
             )
             .foregroundStyle(Color.effectiveAccent)
             .accessibilityLabel(barLabel(bar.date))
-            .accessibilityValue(PomodoroStatsStore.spokenDuration(bar.minutes * 60))
+            .accessibilityValue(PomodoroStatsStore.spokenDuration(bar.workSeconds))
         }
+        .chartYScale(domain: 0...(ticks.last ?? 1))
         .chartXScale(domain: interval.start...interval.end)
         .chartXAxis {
             AxisMarks(values: labelDates) { _ in
@@ -208,7 +211,7 @@ struct PomodoroStatisticsSection: View {
             }
         }
         .chartYAxis {
-            AxisMarks { value in
+            AxisMarks(values: ticks) { value in
                 AxisGridLine()
                 AxisValueLabel {
                     if let minutes = value.as(Double.self) {
@@ -220,6 +223,16 @@ struct PomodoroStatisticsSection: View {
         .environment(\.calendar, calendar)
         .frame(height: 160)
         .padding(.vertical, 4)
+    }
+
+    /// Y-axis ticks in whole, "round" minutes (1, 2, 5, 10, 15, 30 min, 1, 2,
+    /// 4, 8 h …), about four of them, so labels never repeat the way
+    /// Charts' fractional ticks did once rounded to minutes ("0m 0m 1m").
+    private static func minuteTicks(upTo maxMinutes: Double) -> [Double] {
+        let steps: [Double] = [1, 2, 5, 10, 15, 30, 60, 120, 240, 480, 960]
+        let step = steps.first { maxMinutes / $0 <= 4 } ?? 1_920
+        let count = max(1, Int((maxMinutes / step).rounded(.up)))
+        return (0...count).map { Double($0) * step }
     }
 
     private func barLabel(_ date: Date) -> String {
@@ -235,7 +248,7 @@ struct PomodoroStatisticsSection: View {
         while start < interval.end {
             guard let next = calendar.date(byAdding: barUnit, value: 1, to: start) else { break }
             let total = stats.total(in: DateInterval(start: start, end: min(next, interval.end)))
-            bars.append(Bar(date: start, minutes: total.workSeconds / 60, cycles: total.cycles))
+            bars.append(Bar(date: start, workSeconds: total.workSeconds, cycles: total.cycles))
             start = next
         }
         return bars

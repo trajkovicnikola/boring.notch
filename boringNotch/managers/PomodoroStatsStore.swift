@@ -50,18 +50,16 @@ final class PomodoroStatsStore: ObservableObject {
 
     private var todayKey = ""
     private var observers: [NSObjectProtocol] = []
+    private var historyUpdatesTask: Task<Void, Never>?
 
-    /// Gregorian, local time zone, weeks starting on Monday regardless of
-    /// the system setting. Built once and rebuilt on time zone changes,
-    /// since summing a year looks it up for every day.
-    private(set) static var calendar = makeCalendar()
-
-    private static func makeCalendar() -> Calendar {
+    /// Gregorian, weeks starting on Monday regardless of the system
+    /// setting, in the time zone the Mac is in right now.
+    static let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = .current
+        calendar.timeZone = .autoupdatingCurrent
         calendar.firstWeekday = 2
         return calendar
-    }
+    }()
 
     private init() {
         history = Defaults[.pomodoroHistory]
@@ -73,12 +71,7 @@ final class PomodoroStatsStore: ObservableObject {
         let center = NotificationCenter.default
         for name in [Notification.Name.NSCalendarDayChanged, .NSSystemClockDidChange, .NSSystemTimeZoneDidChange] {
             observers.append(center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
-                MainActor.assumeIsolated {
-                    if name == .NSSystemTimeZoneDidChange {
-                        Self.calendar = Self.makeCalendar()
-                    }
-                    self?.refreshToday()
-                }
+                MainActor.assumeIsolated { self?.refreshToday() }
             })
         }
         observers.append(NSWorkspace.shared.notificationCenter.addObserver(
@@ -86,6 +79,18 @@ final class PomodoroStatsStore: ObservableObject {
         ) { [weak self] _ in
             MainActor.assumeIsolated { self?.refreshToday() }
         })
+
+        // Follows every saved change, including ones another running copy
+        // of the app makes, so open views stay current without re-reading.
+        historyUpdatesTask = Task { [weak self] in
+            for await saved in Defaults.updates(.pomodoroHistory, initial: false) {
+                guard let self else { return }
+                if saved != self.history {
+                    self.history = saved
+                }
+                self.refreshToday()
+            }
+        }
     }
 
     static func dayKey(for date: Date) -> String {
@@ -94,10 +99,6 @@ final class PomodoroStatsStore: ObservableObject {
     }
 
     func refreshToday() {
-        let saved = Defaults[.pomodoroHistory]
-        if saved != history {
-            history = saved
-        }
         let key = Self.dayKey(for: Date())
         let record = history[key] ?? .empty
         if key != todayKey || record != today {
@@ -132,17 +133,16 @@ final class PomodoroStatsStore: ObservableObject {
         history[Self.dayKey(for: date)] ?? .empty
     }
 
-    /// Sum of all days in `interval` (end exclusive).
+    /// Sum of all days in `interval` (end exclusive). "yyyy-MM-dd" keys
+    /// sort chronologically, so this is one pass over the recorded days
+    /// with string comparisons, not a calendar walk through every day.
     func total(in interval: DateInterval) -> PomodoroDayRecord {
-        let calendar = Self.calendar
+        let startKey = Self.dayKey(for: interval.start)
+        let endKey = Self.dayKey(for: interval.end)
         var total = PomodoroDayRecord.empty
-        var day = calendar.startOfDay(for: interval.start)
-        while day < interval.end {
-            let record = record(for: day)
+        for (key, record) in history where key >= startKey && key < endKey {
             total.cycles += record.cycles
             total.workSeconds += record.workSeconds
-            guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
-            day = next
         }
         return total
     }
