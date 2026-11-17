@@ -548,6 +548,8 @@ extension Defaults.Keys {
     static let pomodoroOpenNotchOnFinish = Key<Bool>("pomodoroOpenNotchOnFinish", default: true)
     static let pomodoroPlaySound = Key<Bool>("pomodoroPlaySound", default: true)
     static let pomodoroSound = Key<PomodoroSound>("pomodoroSound", default: .alarm)
+    /// Per-day work statistics, keyed by local day ("2026-11-17").
+    static let pomodoroHistory = Key<[String: PomodoroDayRecord]>("pomodoroHistory", default: [:])
 
     // MARK: Calendar
     static let calendarSelectionState = Key<CalendarSelectionState>("calendarSelectionState", default: .all)

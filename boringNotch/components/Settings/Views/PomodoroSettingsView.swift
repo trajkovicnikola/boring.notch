@@ -98,6 +98,8 @@ struct PomodoroSettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            PomodoroStatisticsSection()
         }
         .tint(.effectiveAccent)
         .navigationTitle("Pomodoro")

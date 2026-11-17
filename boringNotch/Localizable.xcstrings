@@ -6758,6 +6758,15 @@
         }
       }
     },
+    "Clear all Pomodoro history?" : {
+
+    },
+    "Clear History" : {
+
+    },
+    "Clear History deletes all Pomodoro statistics. This can't be undone." : {
+
+    },
     "Clear slot" : {
       "localizations" : {
         "de" : {
@@ -9465,6 +9474,12 @@
           }
         }
       }
+    },
+    "Date" : {
+
+    },
+    "Day" : {
+
     },
     "Default" : {
       "comment" : "Sneak Peek style: Default",
@@ -18515,6 +18530,9 @@
         }
       }
     },
+    "Month" : {
+
+    },
     "Music Source" : {
       "localizations" : {
         "cs" : {
@@ -19682,6 +19700,9 @@
           }
         }
       }
+    },
+    "No sessions yet. Finish or skip a work period in the Pomodoro tab and it will show up here." : {
+
     },
     "Normalize gesture direction" : {
       "localizations" : {
@@ -22266,6 +22287,9 @@
           }
         }
       }
+    },
+    "Period" : {
+
     },
     "Pick a Color" : {
       "localizations" : {
@@ -25793,6 +25817,12 @@
           }
         }
       }
+    },
+    "Sessions" : {
+
+    },
+    "Sessions today" : {
+
     },
     "Settings" : {
       "localizations" : {
@@ -29563,6 +29593,9 @@
     "Start Work" : {
 
     },
+    "Statistics" : {
+
+    },
     "System" : {
       "localizations" : {
         "de" : {
@@ -29868,6 +29901,9 @@
           }
         }
       }
+    },
+    "This can't be undone." : {
+
     },
     "Time to Full Charge: %@" : {
       "localizations" : {
@@ -32519,6 +32555,9 @@
         }
       }
     },
+    "Week" : {
+
+    },
     "Week starts on" : {
       "comment" : "Calendar setting: which weekday the week strip starts on",
       "localizations" : {
@@ -32914,6 +32953,9 @@
     "Work periods before long break" : {
 
     },
+    "Work time" : {
+
+    },
     "Works with most media apps, including browsers, to detect what's playing. Note: This may be removed in a future macOS version." : {
       "comment" : "Onboarding description of the universal macOS Now Playing music source.",
       "localizations" : {
@@ -32966,6 +33008,9 @@
           }
         }
       }
+    },
+    "Year" : {
+
     },
     "You can now enjoy the app. If you want to tweak things further, you can always visit the settings." : {
       "localizations" : {

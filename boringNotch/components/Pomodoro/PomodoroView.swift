@@ -23,6 +23,13 @@ struct PomodoroView: View {
             TimelineView(PomodoroTickSchedule(endDate: pomodoro.isRunning ? pomodoro.endDate : nil)) { _ in
                 ring
             }
+            // Hangs off the ring's leading edge without taking part in the
+            // layout, so the ring, dots and controls stay exactly centred.
+            .overlay(alignment: .leading) {
+                PomodoroTodayStats()
+                    .fixedSize()
+                    .alignmentGuide(.leading) { $0[.trailing] + 36 }
+            }
             controls
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -161,6 +168,45 @@ struct PomodoroView: View {
             .help("Skip to Next Phase")
         }
         .imageScale(.large)
+    }
+}
+
+/// Today's work statistics, shown beside the ring. Observes only the stats
+/// store, so it redraws when a work period is recorded, not every tick.
+private struct PomodoroTodayStats: View {
+    @ObservedObject private var stats = PomodoroStatsStore.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // "Sessions", not "cycles": in this app a cycle is the whole run of
+            // work periods up to the long break.
+            item("Sessions today", value: "\(stats.today.cycles)")
+            item(
+                "Work time",
+                value: PomodoroStatsStore.durationText(stats.today.workSeconds),
+                spokenValue: PomodoroStatsStore.spokenDuration(stats.today.workSeconds)
+            )
+        }
+        .accessibilityElement(children: .combine)
+        .onAppear {
+            stats.refreshToday()
+        }
+    }
+
+    private func item(_ title: LocalizedStringKey, value: String, spokenValue: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .textCase(.uppercase)
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(1)
+                .foregroundStyle(.gray)
+            // Quieter than the countdown (22 pt) so the timer stays the focus.
+            Text(value)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .monospacedDigit()
+                .foregroundStyle(.white)
+                .accessibilityLabel(spokenValue ?? value)
+        }
     }
 }
 

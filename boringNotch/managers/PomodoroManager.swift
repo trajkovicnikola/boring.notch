@@ -101,6 +101,10 @@ final class PomodoroManager: NSObject, ObservableObject {
     private var idleTask: Task<Void, Never>?
     private var completionMessageTask: Task<Void, Never>?
     private var systemObservers: [NSObjectProtocol] = []
+    /// When the Mac last went to sleep, and the last full sleep it woke
+    /// from, so statistics can tell whether a work period ran out asleep.
+    private var sleepStartedAt: ContinuousClock.Instant?
+    private var lastSleep: ClosedRange<ContinuousClock.Instant>?
     private let audioPlayer = AudioPlayer()
 
     private override init() {
@@ -111,10 +115,22 @@ final class PomodoroManager: NSObject, ObservableObject {
         // The continuous clock covers sleep, but the sleeping task may only
         // run some time after wake; check right away instead.
         systemObservers.append(NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.willSleepNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.sleepStartedAt = .now
+            }
+        })
+        systemObservers.append(NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didWakeNotification, object: nil, queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
-                self?.checkForPhaseEnd()
+                guard let self else { return }
+                if let start = self.sleepStartedAt {
+                    self.lastSleep = start...ContinuousClock.now
+                    self.sleepStartedAt = nil
+                }
+                self.checkForPhaseEnd()
             }
         })
 
@@ -200,7 +216,20 @@ final class PomodoroManager: NSObject, ObservableObject {
     /// auto-start is on, same as when a phase ends by itself.
     func skip() {
         stopAlarm()
+        // A phase that already ran out (e.g. during sleep, before the wake
+        // check ran) has ended on its own: finish it as such instead of
+        // crediting it as worked time and then skipping the next phase too.
+        if isRunning, let deadline, deadline <= .now {
+            finishPhase(endedAt: deadline)
+            return
+        }
         let wasRunning = isRunning
+        // Only a work period that was actually started counts; skipping one
+        // that never ran (e.g. from a notification) isn't work done.
+        if phase == .work && (isRunning || isPaused) {
+            // Only the time actually worked; paused time never ran down.
+            PomodoroStatsStore.shared.recordWorkPeriod(seconds: phaseDuration - remainingTime, endedAt: Date())
+        }
         advance(afterCompleting: true)
         if wasRunning && Defaults[.pomodoroAutoStartNextPhase] {
             start()
@@ -266,6 +295,7 @@ final class PomodoroManager: NSObject, ObservableObject {
     private func finishPhase(endedAt deadline: ContinuousClock.Instant) {
         var lastPhaseEnd = deadline
         var finishedPhase = phase
+        recordIfWorkEndedAwake(phase, duration: phaseDuration, endedAt: deadline)
         advance(afterCompleting: true)
 
         if Defaults[.pomodoroAutoStartNextPhase] {
@@ -276,6 +306,7 @@ final class PomodoroManager: NSObject, ObservableObject {
             while nextPhaseEnd <= .now {
                 lastPhaseEnd = nextPhaseEnd
                 finishedPhase = phase
+                recordIfWorkEndedAwake(phase, duration: configuredDuration(for: phase), endedAt: nextPhaseEnd)
                 advance(afterCompleting: true)
                 nextPhaseEnd = lastPhaseEnd + .seconds(configuredDuration(for: phase))
             }
@@ -284,6 +315,21 @@ final class PomodoroManager: NSObject, ObservableObject {
 
         let isStale = ContinuousClock.now - lastPhaseEnd > Self.staleCompletionThreshold
         announceCompletion(of: finishedPhase, next: phase, isStale: isStale)
+    }
+
+    /// Statistics count a work period that ran out only if it ended while
+    /// the Mac was awake: periods that ended during the last sleep are left
+    /// out, and so is anything handled long after its end (stale) in case a
+    /// sleep notification was missed.
+    private func recordIfWorkEndedAwake(_ phase: PomodoroPhase, duration: TimeInterval, endedAt end: ContinuousClock.Instant) {
+        guard phase == .work else { return }
+        if let sleep = sleepStartedAt.map({ $0...ContinuousClock.now }) ?? lastSleep, sleep.contains(end) {
+            return
+        }
+        let sinceEnd = ContinuousClock.now - end
+        guard sinceEnd <= Self.staleCompletionThreshold else { return }
+        let endDate = Date().addingTimeInterval(-Self.seconds(sinceEnd))
+        PomodoroStatsStore.shared.recordWorkPeriod(seconds: duration, endedAt: endDate)
     }
 
     private func advance(afterCompleting completed: Bool) {
